@@ -1,0 +1,109 @@
+
+<style>
+    .header {
+  background-color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.letter {
+  font-size: 48px;
+  color: #333;
+  cursor: pointer;
+  position: relative;
+}
+
+.collection-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 150px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  z-index: 1000;
+}
+
+.collection-menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.collection-menu li {
+  margin-bottom: 5px;
+}
+
+.collection-menu li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+}
+</style>
+
+
+  <header class="header">
+    <div class="logo">
+      <span class="letter" data-collection="collection1">F</span>
+      <span class="letter" data-collection="collection2">A</span>
+      <span class="letter" data-collection="collection3">B</span>
+      <span class="letter" data-collection="collection4">L</span>
+      <span class="letter" data-collection="Exlibris">E</span>
+      <span class="letter" data-collection="collection6">D</span>
+      <span class="letter" data-collection="collection7">Ø</span>
+      <span class="letter" data-collection="collection8">B</span>
+      <span class="letter" data-collection="collection9">A</span>
+      <span class="letter" data-collection="collection10">Z</span>
+      <span class="letter" data-collection="collection11">A</span>
+      <span class="letter" data-collection="collection12">R</span>
+    </div>
+  </header>
+
+  <!-- Подключаем скрипт -->
+  <script>
+    // script.js
+document.addEventListener('DOMContentLoaded', () => {
+  const letters = document.querySelectorAll('.letter');
+
+  letters.forEach(letter => {
+    letter.addEventListener('click', () => {
+      // Получаем данные о коллекции из атрибута data-collection
+      const collectionName = letter.getAttribute('data-collection');
+
+      // Создаем выпадающее меню
+      const menu = document.createElement('div');
+      menu.classList.add('collection-menu');
+
+      // Заполняем меню элементами
+      menu.innerHTML = `
+        <ul>
+          <li><a href="#">${collectionName}</a></li>
+        </ul>
+      `;
+
+      // Добавляем меню к документу
+      letter.appendChild(menu);
+
+      // Удаляем предыдущие меню
+        const existingMenu = letter.querySelector('.collection-menu');
+        if (existingMenu) {
+        existingMenu.remove();
+        }
+
+      // Скрываем меню при клике вне области
+      document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+          menu.remove();
+        }
+      });
+    });
+  });
+});
+  </script>

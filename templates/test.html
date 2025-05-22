@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Карточка товара</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .card {
+            width: 380px;
+            height: 810px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-header {
+            background-color: #fde0e7; /* Светло-розовый фон шапки */
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .share-icon {
+            background-color: #fff;
+            color: #e91e63; /* Розовый цвет иконки */
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+        }
+
+        .card-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin: 0;
+        }
+
+        .image-container {
+            background-color: #ffebee; /* Еще светлее розовый фон под фото */
+            padding: 15px;
+        }
+
+        .product-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            /* Учитываем высоту, чтобы занимало больше места */
+            max-height: 300px; /* Примерная максимальная высота изображения */
+            object-fit: contain; /* Чтобы изображение полностью помещалось */
+        }
+
+        .thumbnails-container {
+            display: flex;
+            padding: 10px 15px;
+            gap: 8px;
+            background-color: #fff;
+        }
+
+        .thumbnail {
+            width: 70px;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .details {
+            padding: 15px;
+            background-color: #fff;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px 15px;
+            font-size: 0.95em;
+            color: #555;
+        }
+
+        .detail-icon {
+            color: #777;
+            font-size: 1.1em;
+        }
+
+        .collection {
+            background-color: #ffebee;
+            color: #e91e63;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collection-icon {
+            font-size: 1em;
+        }
+
+        .description {
+            padding: 0 15px 15px;
+            color: #777;
+            font-size: 0.85em;
+            line-height: 1.5;
+        }
+
+        .footer {
+            background-color: #fde0e7;
+            color: #e91e63;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            border-top: 1px solid #fbcfe8;
+            font-size: 1.1em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer-icon {
+            font-size: 1em;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <div class="share-icon">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            </div>
+            <h2 class="card-title">Розовые очки</h2>
+        </div>
+        <div class="image-container">
+            <img src="https://i.ibb.co/vX1mQ0F/pink-glasses.png" alt="Розовые очки" class="product-image">
+        </div>
+        <div class="thumbnails-container">
+            <img src="https://i.ibb.co/j474H0G/pink-glasses-hand1.png" alt="Превью 1" class="thumbnail">
+            <img src="https://i.ibb.co/0jS4s0G/pink-glasses-hand2.png" alt="Превью 2" class="thumbnail">
+            <img src="https://i.ibb.co/Y8dM6zR/pink-glasses-hand3.png" alt="Превью 3" class="thumbnail">
+        </div>
+        <div class="details">
+            <i class="fa-solid fa-ruler detail-icon"></i>
+            <span>30x10 мм</span>
+            <i class="fa-solid fa-weight-scale detail-icon"></i>
+            <span>6 гр</span>
+            <i class="fa-solid fa-screwdriver-wrench detail-icon"></i>
+            <span>Бронза «Орихалки», вставка Хризопраз, эмаль</span>
+        </div>
+        <div class="collection">
+            <span>Коллекция «Baby dream»</span>
+            <i class="fa-regular fa-bookmark collection-icon"></i>
+        </div>
+        <div class="description">
+            Когда серость и мрак нашего мира начинают давить, а яркие краски жизни теряются в тенях, не спеши прибегать к экстремальным методам, чтобы отвлечься. Вместо этого попробуй утопать в бокале или теряться в иллюзиях галлюциногенных...
+        </div>
+        <div class="footer">
+            МАКГАФФИНЫ
+            <i class="fa-regular fa-clock footer-icon"></i>
+        </div>
+    </div>
+</body>
+</html>
