@@ -17,6 +17,7 @@ collections_colors = {
     "Amore": "#e53935",
     "Beast": "#6d4c41"
 }
+
 def get_collection_color():
     pass
 def read_products_from_csv():
@@ -37,7 +38,14 @@ def show_products():
 def show_card():
     products = read_products_from_csv()
     random.shuffle(products)
-    return render_template('card.html', product=get_product_by_sku("0001"), collections_colors=collections_colors)
+    return render_template('card.html', product=get_product_by_sku("0052"), collections_colors=collections_colors)
+
+@app.route('/api/products')
+def api_products():
+    collection = request.args.get('collection')
+    products = get_products_by_collection(collection) if collection else read_products_from_csv()
+    return jsonify(products)
+
 
 def get_product_by_sku(sku):
     import csv
@@ -54,4 +62,4 @@ def get_product_by_sku(sku):
         return {'error': str(e)}
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='192.168.13.67', port=5000,debug=True)

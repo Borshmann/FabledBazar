@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js "></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <meta charset="UTF-8">
     <title>Список товаров</title>
@@ -10,6 +11,29 @@
 <body>
     {% include 'header.html' %}
     {% block content %}
+
+    <div class="card-item-container">
+
+    </div>
+    <div class="shop-menu">
+        <span class="letter gecco" data-collection="collection1"></span>
+        <div class="letter-box">
+            <span class="letter F" data-collection="collection1"></span>
+            <span class="letter A" data-collection="collection2"></span>
+            <span class="letter B" data-collection="collection3"></span>
+            <span class="letter L" data-collection="collection4"></span>
+            <span class="letter E" data-collection="Exlibris"></span>
+            <span class="letter D" data-collection="collection6"></span>
+            <span class="letter B" data-collection="collection7"></span>
+            <span class="letter A" data-collection="collection8"></span>
+            <span class="letter Z" data-collection="collection9"></span>
+            <span class="letter A" data-collection="collection10"></span>
+            <span class="letter A" data-collection="collection11"></span>
+            <span class="letter R" data-collection="collection12"></span>
+        </div>
+    </div>
+    <div id="collection-title"></div> <!-- Будет появляться в углу -->
+    
     <div class="shop-grid">
 
         {% for item in products %}
@@ -21,6 +45,118 @@
     </div>
 
     {% endblock %}
+    <script>
+        $(document).ready(function() {
+            const $letterBox = $('.letter-box');
+            const $collectionTitle = $('#collection-title');
+            let isAnimating = false;
+
+            $('.letter').on('click', function() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const $clickedLetter = $(this);
+                const collectionName = $clickedLetter.data('collection');
+
+                // 1. Подсветка буквы (если нужно)
+                $('.letter').removeClass('active');
+                $clickedLetter.addClass('active');
+
+                // 2. Улетание вверх с инерцией
+                $letterBox
+                    .removeClass('return') // Отключаем класс возврата
+                    .css('transform', 'translateY(-100vh)');
+
+                // 3. Показ названия коллекции
+                $collectionTitle.text(collectionName).addClass('visible');
+
+                // 4. Возврат без инерции (или с линейной анимацией)
+                setTimeout(() => {
+                    $letterBox
+                        .addClass('return') // Включаем класс с линейной анимацией
+                        .css('transform', 'translateY(0)');
+
+                    // Сброс состояния
+                    setTimeout(() => {
+                        $collectionTitle.removeClass('visible');
+                        $clickedLetter.removeClass('active');
+                        isAnimating = false;
+                    }, 300); // Ждём завершения анимации возврата
+                }, 3000); // Задержка перед возвратом
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Обработчик клика на букву
+            $('.letter').on('click', function() {
+                const selectedCollection = $(this).data('collection');
+                const $allItems = $('.shop-item');
+                const delayStep = 20; // 0.1 секунды в миллисекундах
+                
+                // 1. Анимация улетания меню
+                $('.letter-box').css('transform', 'translateY(-100vh)');
+                
+                // 2. Постепенное скрытие несоответствующих товаров
+                $allItems.each(function(index) {
+                    const $item = $(this);
+                    const itemCollection = $item.data('collection');
+                    
+                    setTimeout(() => {
+                        if (selectedCollection && itemCollection !== selectedCollection) {
+                            $item.hide(); // Плавное скрытие
+                        } else {
+                            $item.show(); // Показываем подходящие (на случай повторного клика)
+                        }
+                    }, index * delayStep);
+                });
+                
+                // 3. Возврат меню через время
+                setTimeout(() => {
+                    $('.letter-box').css('transform', 'translateY(0)');
+                }, 1000);
+            });
+            
+            // Кнопка "Показать все" с поэтапным появлением
+            $('#show-all').on('click', function() {
+                const $hiddenItems = $('.shop-item:hidden');
+                const delayStep = 30;
+                
+                $hiddenItems.each(function(index) {
+                    setTimeout(() => {
+                        $(this).fadeIn(0);
+                    }, index * delayStep);
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            const collections_colors = {
+                "Exlibris": "#F9F5FF",
+                "All Hallows Eve": "#ff6f00",
+                "Zodiac": "#1e88e5",
+                "Lucky items": "#43a047",
+                "Alchimia": "#8e24aa",
+                "Baby dream": "#00acc1",
+                "Futurism": "#f4511e",
+                "Amore": "#e53935",
+                "Beast": "#6d4c41"
+            };
+        
+            $('.letter').on('click', function () {
+                const collectionName = $(this).attr('data-collection');
+                const color = collections_colors[collectionName];
+        
+                if (color) {
+                    $('body').css('background-color', color);
+                } else {
+                    console.warn(`Цвет для "${collectionName}" не найден`);
+                }
+            });
+        });
+        </script>
+
 </body>
 
 </html>
