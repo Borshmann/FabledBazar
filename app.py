@@ -1,6 +1,7 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 import csv
 import random
+
 
 app = Flask(__name__)
 
@@ -60,6 +61,25 @@ def get_product_by_sku(sku):
         return {'error': 'CSV file not found'}
     except Exception as e:
         return {'error': str(e)}
+
+@app.route('/api/product-card/<sku>')
+def get_product_card(sku):
+    product = get_product_by_sku(sku)  # Реализуй поиск по SKU
+    if not product:
+        return jsonify({'error': 'Product not found'}), 404
+    return render_template('card.html', product=product, collections_colors=collections_colors)
+
+@app.route('/api/product/<product_id>')
+def get_product_by_id(product_id):
+    try:
+        with open(CSV_FILE, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row['sku'] == product_id:  # Предполагаем, что у вас есть столбец id
+                    return jsonify(row)
+        return jsonify({'error': 'Product not found'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
     app.run(host='192.168.13.67', port=5000,debug=True)

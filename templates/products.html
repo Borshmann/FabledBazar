@@ -18,18 +18,18 @@
     <div class="shop-menu">
         <span class="letter gecco" data-collection="collection1"></span>
         <div class="letter-box">
-            <span class="letter F" data-collection="collection1"></span>
-            <span class="letter A" data-collection="collection2"></span>
-            <span class="letter B" data-collection="collection3"></span>
-            <span class="letter L" data-collection="collection4"></span>
+            <span class="letter F" data-collection="Futurism"></span>
+            <span class="letter A" data-collection=""></span>
+            <span class="letter B" data-collection="Baby dream"></span>
+            <span class="letter L" data-collection="Lucky items"></span>
             <span class="letter E" data-collection="Exlibris"></span>
-            <span class="letter D" data-collection="collection6"></span>
-            <span class="letter B" data-collection="collection7"></span>
-            <span class="letter A" data-collection="collection8"></span>
-            <span class="letter Z" data-collection="collection9"></span>
-            <span class="letter A" data-collection="collection10"></span>
-            <span class="letter A" data-collection="collection11"></span>
-            <span class="letter R" data-collection="collection12"></span>
+            <span class="letter D" data-collection=""></span>
+            <span class="letter B" data-collection="Beast"></span>
+            <span class="letter A" data-collection=""></span>
+            <span class="letter Z" data-collection="Zodiac"></span>
+            <span class="letter A" data-collection="All Hallows Eve"></span>
+            <span class="letter A" data-collection="Alchimia"></span>
+            <span class="letter R" data-collection=""></span>
         </div>
     </div>
     <div id="collection-title"></div> <!-- Будет появляться в углу -->
@@ -43,48 +43,61 @@
         </article>
         {% endfor %}
     </div>
-
+    <div class="fixed">
+            <div id="product-detail" class="card-item-container"></div>
+    </div>
     {% endblock %}
-    <script>
-        $(document).ready(function() {
-            const $letterBox = $('.letter-box');
-            const $collectionTitle = $('#collection-title');
-            let isAnimating = false;
+<script>
+    $(document).ready(function() {
+        const $letterBox = $('.letter-box');
+        const $collectionTitle = $('#collection-title');
+        let isAnimating = false;
+        let currentCollection = null;
 
-            $('.letter').on('click', function() {
-                if (isAnimating) return;
-                isAnimating = true;
+        $('.letter').on('click', function() {
+            if (isAnimating) return;
+            isAnimating = true;
 
-                const $clickedLetter = $(this);
-                const collectionName = $clickedLetter.data('collection');
+            const $clickedLetter = $(this);
+            const collectionName = $clickedLetter.data('collection');
 
-                // 1. Подсветка буквы (если нужно)
-                $('.letter').removeClass('active');
-                $clickedLetter.addClass('active');
+            // 1. Подсветка активной буквы
+            $('.letter').removeClass('active');
+            $clickedLetter.addClass('active');
 
-                // 2. Улетание вверх с инерцией
-                $letterBox
-                    .removeClass('return') // Отключаем класс возврата
-                    .css('transform', 'translateY(-100vh)');
+            // 2. Улетание меню букв вверх
+            $letterBox.removeClass('return').css('transform', 'translateY(-100vh)');
 
-                // 3. Показ названия коллекции
-                $collectionTitle.text(collectionName).addClass('visible');
+            // Если уже было выбрано что-то, делаем fadeOut текущего заголовка
+            if (currentCollection !== null) {
+                $collectionTitle.removeClass('visible').addClass('hidden');
 
-                // 4. Возврат без инерции (или с линейной анимацией)
                 setTimeout(() => {
-                    $letterBox
-                        .addClass('return') // Включаем класс с линейной анимацией
-                        .css('transform', 'translateY(0)');
+                    // Меняем текст заголовка
+                    $collectionTitle.text(collectionName);
 
-                    // Сброс состояния
-                    setTimeout(() => {
-                        $collectionTitle.removeClass('visible');
-                        $clickedLetter.removeClass('active');
-                        isAnimating = false;
-                    }, 300); // Ждём завершения анимации возврата
-                }, 3000); // Задержка перед возвратом
-            });
+                    // Показываем новый заголовок
+                    $collectionTitle.removeClass('hidden').addClass('visible');
+
+                    // Возврат меню
+                    $letterBox.addClass('return').css('transform', 'translateY(0)');
+
+                    isAnimating = false;
+                }, 300); // Длительность fadeOut
+            } else {
+                // Первый запуск - просто показываем заголовок
+                $collectionTitle.text(collectionName).removeClass('hidden').addClass('visible');
+
+                // Возврат меню
+                setTimeout(() => {
+                    $letterBox.addClass('return').css('transform', 'translateY(0)');
+                    isAnimating = false;
+                }, 3000);
+            }
+
+            currentCollection = collectionName;
         });
+    });
     </script>
     <script>
         $(document).ready(function() {
@@ -133,15 +146,15 @@
     <script>
         $(document).ready(function () {
             const collections_colors = {
-                "Exlibris": "#F9F5FF",
-                "All Hallows Eve": "#ff6f00",
-                "Zodiac": "#1e88e5",
-                "Lucky items": "#43a047",
-                "Alchimia": "#8e24aa",
-                "Baby dream": "#00acc1",
-                "Futurism": "#f4511e",
-                "Amore": "#e53935",
-                "Beast": "#6d4c41"
+                "Exlibris": "#F9F6EC",
+                "All Hallows Eve": "#FEF0E1",
+                "Zodiac": "#EBF8FF",
+                "Lucky items": "#F0FFE1",
+                "Alchimia": "#F2F0FF",
+                "Baby dream": "#FFEBF2",
+                "Futurism": "#ECF8F9",
+                "Amore": "#FFEAE5",
+                "Beast": "#F9F2EC"
             };
         
             $('.letter').on('click', function () {
@@ -150,12 +163,41 @@
         
                 if (color) {
                     $('body').css('background-color', color);
+                    $('.gecco').css('background-color', color);
                 } else {
                     console.warn(`Цвет для "${collectionName}" не найден`);
                 }
             });
         });
         </script>
+
+    <script>
+    $(document).ready(function() {
+        $('.shop-item').on('click', function() {
+            const productId = $(this).data('id'); // Получаем data-id
+
+            console.log('Кликнут ID:', productId); // Для проверки
+            const $detailContainer = $('#product-detail');
+            $detailContainer.empty();
+
+            $detailContainer.html('<p>Загрузка...</p>');
+
+            $.ajax({
+            url: `/api/product-card/${productId}`,
+            method: 'GET',
+            success: function(html) {
+                $detailContainer.empty().append(html);
+                $detailContainer.addClass('card-forward');
+                $('.shop-grid').css("filter", "opacity(0.5)");
+            },
+            error: function(xhr, status, error) {
+                console.error("Ошибка загрузки карточки:", error);
+                $detailContainer.html('<p>Не удалось загрузить карточку товара.</p>');
+            }
+        });
+        });
+    });
+    </script>
 
 </body>
 
