@@ -1,26 +1,192 @@
 <!DOCTYPE html>
 <html lang="ru">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js "></script>
+<script src="/static/js/products.js"></script>
+<script src="/static/js/jquery.noisy.js"></script>
 
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <meta charset="UTF-8">
     <title>Список товаров</title>
 </head>
 
 <body>
-    {% include 'header.html' %}
-    {% block content %}
-    <div class="shop-grid">
 
+    {% block content %}
+    <div class="card-item-container"></div>
+
+    {% include 'header.html' %}
+    
+    <div class="shop-grid">
         {% for item in products %}
         <article data-id="{{ item.sku }}" data-collection="{{ item.collection }}" class="shop-item" >
-            <img class="item-img" src="{{ url_for('static', filename='img/' + item.sku + '/' + item.sku + '-main.webp') }}" alt="" srcset="" style="filter: drop-shadow(0px 0px 0px {{ collections_colors[item.collection] }});">
+            <img class="item-img-blur" src="{{ url_for('static', filename='img/' + item.sku + '/' + item.sku + '-main.webp') }}" alt="" srcset="">
+            <img class="item-img" src="{{ url_for('static', filename='img/' + item.sku + '/' + item.sku + '-main.webp') }}" alt="" srcset="">
             <p class="item-name center goudy">{{ item.name }}</p>
         </article>
+
         {% endfor %}
+
+    </div>
+    <div class="fixed">
+            <div id="product-detail" class="card-item-container"></div>
     </div>
 
     {% endblock %}
+
+<!-- <script>
+    $(document).ready(function() {
+        const $letterBox = $('.letter-box');
+        const $collectionTitle = $('#collection-title');
+        let isAnimating = false;
+        let currentCollection = null;
+
+        $('.letter').on('click', function() {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            const $clickedLetter = $(this);
+            const collectionName = $clickedLetter.data('collection');
+
+            // 1. Подсветка активной буквы
+            $('.letter').removeClass('active');
+            $clickedLetter.addClass('active');
+
+            // 2. Улетание меню букв вверх
+            $letterBox.removeClass('return').css('transform', 'translateY(-100vh)');
+
+            // Если уже было выбрано что-то, делаем fadeOut текущего заголовка
+            if (currentCollection !== null) {
+                $collectionTitle.removeClass('visible').addClass('hidden');
+
+                setTimeout(() => {
+                    // Меняем текст заголовка
+                    $collectionTitle.text(collectionName);
+
+                    // Показываем новый заголовок
+                    $collectionTitle.removeClass('hidden').addClass('visible');
+
+                    // Возврат меню
+                    $letterBox.addClass('return').css('transform', 'translateY(0)');
+
+                    isAnimating = false;
+                }, 300); // Длительность fadeOut
+            } else {
+                // Первый запуск - просто показываем заголовок
+                $collectionTitle.text(collectionName).removeClass('hidden').addClass('visible');
+
+                // Возврат меню
+                setTimeout(() => {
+                    $letterBox.addClass('return').css('transform', 'translateY(0)');
+                    isAnimating = false;
+                }, 3000);
+            }
+
+            currentCollection = collectionName;
+        });
+    });
+    </script>
+    <script>
+        $(document).ready(function() {
+            // Обработчик клика на букву
+            $('.letter').on('click', function() {
+                const selectedCollection = $(this).data('collection');
+                const $allItems = $('.shop-item');
+                const delayStep = 20; // 0.1 секунды в миллисекундах
+                
+                // 1. Анимация улетания меню
+                $('.letter-box').css('transform', 'translateY(-100vh)');
+                
+                // 2. Постепенное скрытие несоответствующих товаров
+                $allItems.each(function(index) {
+                    const $item = $(this);
+                    const itemCollection = $item.data('collection');
+                    
+                    setTimeout(() => {
+                        if (selectedCollection && itemCollection !== selectedCollection) {
+                            $item.hide(); // Плавное скрытие
+                        } else {
+                            $item.show(); // Показываем подходящие (на случай повторного клика)
+                        }
+                    }, index * delayStep);
+                });
+                
+                // 3. Возврат меню через время
+                setTimeout(() => {
+                    $('.letter-box').css('transform', 'translateY(0)');
+                }, 1000);
+            });
+            
+            // Кнопка "Показать все" с поэтапным появлением
+            $('#show-all').on('click', function() {
+                const $hiddenItems = $('.shop-item:hidden');
+                const delayStep = 30;
+                
+                $hiddenItems.each(function(index) {
+                    setTimeout(() => {
+                        $(this).fadeIn(0);
+                    }, index * delayStep);
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            const collections_colors = {
+                "Exlibris": "#F9F6EC",
+                "All Hallows Eve": "#FEF0E1",
+                "Zodiac": "#EBF8FF",
+                "Lucky items": "#F0FFE1",
+                "Alchimia": "#F2F0FF",
+                "Baby dream": "#FFEBF2",
+                "Futurism": "#ECF8F9",
+                "Amore": "#FFEAE5",
+                "Beast": "#F9F2EC"
+            };
+        
+            $('.letter').on('click', function () {
+                const collectionName = $(this).attr('data-collection');
+                const color = collections_colors[collectionName];
+        
+                if (color) {
+                    $('body').css('background-color', color);
+                    $('.gecco').css('background-color', color);
+                } else {
+                    console.warn(`Цвет для "${collectionName}" не найден`);
+                }
+            });
+        });
+        </script>
+
+    <script>
+    $(document).ready(function() {
+        $('.shop-item').on('click', function() {
+            const productId = $(this).data('id'); // Получаем data-id
+
+            console.log('Кликнут ID:', productId); // Для проверки
+            const $detailContainer = $('#product-detail');
+            $detailContainer.empty();
+
+            $detailContainer.html('<p>Загрузка...</p>');
+
+            $.ajax({
+            url: `/api/product-card/${productId}`,
+            method: 'GET',
+            success: function(html) {
+                $detailContainer.empty().append(html);
+                $detailContainer.addClass('card-forward');
+                $('.shop-grid').css("filter", "opacity(0.5)");
+            },
+            error: function(xhr, status, error) {
+                console.error("Ошибка загрузки карточки:", error);
+                $detailContainer.html('<p>Не удалось загрузить карточку товара.</p>');
+            }
+        });
+        });
+    });
+    </script> -->
+
 </body>
 
 </html>
