@@ -107,13 +107,11 @@ $(document).ready(function () {
     $('.letter').on('click', function () {
         const $button = $(this);
         const selectedCollection = $(this).data('collection');
-        // Проверяем, есть ли уже сохранённый класс (в data)
         const originalClass = $button.data('original-class');
 
         if (!originalClass) {
-            // Это первый клик: сохраняем оригинальный класс и заменяем на X
             const currentClass = $button.attr('class').split(' ')
-                .find(cls => cls !== 'letter'); // исключаем общий класс "letter"
+                .find(cls => cls !== 'letter');
 
             if (currentClass) {
                 $button.data('original-class', currentClass);
@@ -121,14 +119,12 @@ $(document).ready(function () {
             }
             serialize(selectedCollection);
         } else {
-            // Это повторный клик: возвращаем оригинальный класс
             const savedClass = $button.data('original-class');
             $button.removeClass('X').addClass(savedClass);
-            $button.removeData('original-class'); // очищаем сохранённые данные
+            $button.removeData('original-class');
             deserialize();
         }
 
-        // Твой существующий код
         const collectionName = $button.attr('data-collection');
         const color = collections_colors[collectionName];
 
@@ -148,13 +144,12 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('#shop_menu').hover(
         function () {
-            // При наведении мышью
-            // $('.shop-grid').css('opacity', '0.2');
             $(".shop-grid").css('filter', 'blur(8px) saturate(0) brightness(1.5)');
+            $("#menu").css('filter', 'blur(8px) saturate(0) brightness(1.5)');
         },
         function () {
-            // Когда курсор уходит
             $(".shop-grid").css('filter', 'none');
+            $("#menu").css('filter', 'none');
         }
     );
 });

@@ -1,0 +1,37 @@
+
+<div class="card-exit">
+    X
+</div>
+<div id="item-card" class="item-card" data-collection-color="{{ collections_colors[product.collection] }}" style="background-color: {{ collections_colors[product.collection] }} ;">
+    <div class="item-card-inner">
+        <div class="card-img-box">
+            <img class="icon-coll" src="/static/icons/colls/alhymia.svg" alt="">
+            <img class="card-thumbnail" src="{{ url_for('static', filename='img/' + product.sku + '/' + product.sku + '-main.webp') }}" alt="" class="card-main-image">
+        </div>
+        <div class="card-scrolling-box" style="background-color: {{ collections_colors[product.collection] }} ;">
+        </div>
+        <div class="grid-container">
+            <div class="grid-item"><img src="/static/icons/dimension.svg"></div>
+            <div class="grid-item-text"><p>{{ product.Height }}x{{ product.Width }} мм</p></div>
+            <div class="grid-item"><img src="/static/icons/weight.svg"></div>
+            <div class="grid-item-text"><p>{{ product.Weight }} гр</p></div>
+            <div class="grid-item"><img src="/static/icons/material.svg"></div>
+            <div class="grid-item-text card-info-text-flex"><p class="p-st card-grid-material">{{ product.material }}</p></div>
+          </div>
+        <div class="card-line"  style="background-color: {{ collections_colors[product.collection] }} ;">
+            <p class="card-collection gothic_bold">Коллекция «{{ product.collection }}»</p>
+
+            <div class="card-line-circle">
+                <img src="/static/icons/dot.svg" alt="">
+            </div>
+        </div>
+        <div class="card-text">
+            <p id="card_description" class="gothic card-description">{{ product.short_description }}</p>
+        </div>
+    </div>
+    <div id="card_showmore" class="card-showmore">
+        <img src="/static/icons/line.svg" alt="">
+    </div>
+</div>
+
+<script src="/static/js/card_parallax.js"></script>

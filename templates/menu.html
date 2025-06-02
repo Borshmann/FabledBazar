@@ -1,0 +1,27 @@
+<div id="menu" class="menu">
+    <a><h2 class="gothic h2-menu">О FABLED BAZAAR</h2></a>
+    <a><h2 class="gothic h2-menu">О МАКГАФФИНАХ</h2></a>
+    <a><h2 class="gothic h2-menu">КАК ПРИОБРЕСТИ</h2></a>
+</div>
+<script>
+    $(document).ready(function() {
+    // Изначально скрываем меню
+    $('#menu').hide();
+    
+    // Обработчик клика на кнопку меню
+    $('#menu_btn').click(function() {
+        // Проверяем, видно ли меню
+        if ($('#menu').is(':visible')) {
+            // Если меню видно, скрываем его и показываем .shop-grid
+            $('#menu').fadeOut(400, function() {
+                $('.shop-grid').fadeIn(400);
+            });
+        } else {
+            // Если меню скрыто, скрываем .shop-grid и показываем меню
+            $('.shop-grid').fadeOut(400, function() {
+                $('#menu').fadeIn(400);
+            });
+        }
+    });
+});
+</script>
