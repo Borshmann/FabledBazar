@@ -1,66 +1,65 @@
+
 $(document).ready(function () {
+    // === 1. Tooltip анимация "печатания" для .letter ===
     const $body = $('body');
     const typingSpeed = 50; // Скорость печатания (в мс)
     let typingTimeout;
 
-    $('.letter').each(function () {
-        const $letter = $(this);
+    function initLetterTooltips() {
+        $('.letter').each(function () {
+            const $letter = $(this);
 
-        $letter.on('mouseenter', function () {
-            const text = $letter.attr('data-collection');
+            $letter.on('mouseenter.tooltip', function () {
+                const text = $letter.attr('data-collection');
 
-            // Проверяем, что текст существует и содержит хотя бы 2 символа
-            if (!text || text.length < 2) return;
+                if (!text || text.length < 2) return;
 
-            const offset = $letter.offset();
-            const width = $letter.outerWidth();
-            const height = $letter.outerHeight();
+                const offset = $letter.offset();
+                const width = $letter.outerWidth();
+                const height = $letter.outerHeight();
 
-            // Получаем или создаём tooltip
-            let $tooltip = $('#dynamic-tooltip');
-            if (!$tooltip.length) {
-                $tooltip = $('<p>')
-                    .attr('id', 'dynamic-tooltip')
-                    .addClass('header-coll-name goudy')
-                    .appendTo($body);
-            }
-
-            // Центрируем tooltip под буквой
-            $tooltip.css({
-                top: offset.top + height,
-                left: offset.left + width / 2
-            }).css('opacity', 1).show();
-
-            // Начинаем с второй буквы
-            let index = 1;
-            const fullText = text.substring(1); // Обрезаем первую букву
-
-            $tooltip.text(''); // Очищаем перед анимацией
-
-            function type() {
-                if (index <= fullText.length) {
-                    const currentText = fullText.substring(0, index);
-                    const verticalText = currentText.split('').join('\n');
-                    $tooltip.text(verticalText);
-                    index++;
-                    typingTimeout = setTimeout(type, typingSpeed);
+                let $tooltip = $('#dynamic-tooltip');
+                if (!$tooltip.length) {
+                    $tooltip = $('<p>')
+                        .attr('id', 'dynamic-tooltip')
+                        .addClass('header-coll-name goudy')
+                        .appendTo($body);
                 }
-            }
 
-            type(); // Запускаем анимацию
+                $tooltip.css({
+                    top: offset.top + height,
+                    left: offset.left + width / 2
+                }).css('opacity', 1).show();
+
+                let index = 1;
+                const fullText = text.substring(1);
+
+                $tooltip.text('');
+
+                function type() {
+                    if (index <= fullText.length) {
+                        const currentText = fullText.substring(0, index);
+                        const verticalText = currentText.split('').join('\n');
+                        $tooltip.text(verticalText);
+                        index++;
+                        typingTimeout = setTimeout(type, typingSpeed);
+                    }
+                }
+
+                type();
+            });
+
+            $letter.on('mouseleave.tooltip', function () {
+                const $tooltip = $('#dynamic-tooltip');
+                if ($tooltip.length) {
+                    clearTimeout(typingTimeout);
+                    $tooltip.css('opacity', 0);
+                }
+            });
         });
+    }
 
-        $letter.on('mouseleave', function () {
-            const $tooltip = $('#dynamic-tooltip');
-            if ($tooltip.length) {
-                clearTimeout(typingTimeout);
-                $tooltip.css('opacity', 0); // Плавное исчезновение
-            }
-        });
-    });
-});
-
-$(document).ready(function () {
+    // === 2. Логика фильтрации коллекций ===
     const collections_colors = {
         "Exlibris": "#F9F6EC",
         "All Hallows Eve": "#FEF0E1",
@@ -93,7 +92,7 @@ $(document).ready(function () {
 
     function deserialize() {
         const $allItems = $('.shop-item');
-        const delayStep = 20; // 20 мс между элементами
+        const delayStep = 20;
 
         $allItems.each(function(index) {
             const $item = $(this);
@@ -104,9 +103,12 @@ $(document).ready(function () {
         });
     }
 
-    $('.letter').on('click', function () {
+    let is_colored = false;
+
+    // === 3. Клик по букве (с делегированием) ===
+    $(document).on('click', '.letter', function () {
         const $button = $(this);
-        const selectedCollection = $(this).data('collection');
+        const selectedCollection = $button.data('collection');
         const originalClass = $button.data('original-class');
 
         if (!originalClass) {
@@ -127,29 +129,37 @@ $(document).ready(function () {
 
         const collectionName = $button.attr('data-collection');
         const color = collections_colors[collectionName];
+        const defaultBgColor = '#F7F5F3';
 
-        if (color) {
+        if (is_colored == false) {
             $('body').css('background-color', color);
             if (window.matchMedia("(max-width: 768px)").matches) {
                 $('.gecco').css('background-color', color);
             }
             $(".shop-menu").css('background-image', 'linear-gradient(to bottom, ' + color + ', rgba(147, 112, 231, 0))');
+            is_colored = true;
         } else {
-            console.warn(`Цвет для "${collectionName}" не найден`);
+           $('body').css('background-color', defaultBgColor);
+            if (window.matchMedia("(max-width: 768px)").matches) {
+                $('.gecco').css('background-color', defaultBgColor);
+            }
+            $(".shop-menu").css('background-image', '');
+            is_colored = false;
         }
     });
-});
 
-
-$(document).ready(function () {
-    $('#shop_menu').hover(
-        function () {
+    // === 4. Ховер на #menu_btn (с делегированием) ===
+    $(document).on({
+        mouseenter: function () {
             $(".shop-grid").css('filter', 'blur(8px) saturate(0) brightness(1.5)');
             $("#menu").css('filter', 'blur(8px) saturate(0) brightness(1.5)');
         },
-        function () {
+        mouseleave: function () {
             $(".shop-grid").css('filter', 'none');
             $("#menu").css('filter', 'none');
         }
-    );
+    }, '#shop_menu');
+
+    // === 5. Запуск tooltip'ов при загрузке ===
+    initLetterTooltips();
 });

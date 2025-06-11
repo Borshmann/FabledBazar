@@ -1,11 +1,9 @@
 $(document).ready(function () {
+    const $blocker = $('#background_blocker');
+    const $detailContainer = $('#product-detail');
     $('.shop-item').on('click', function () {
         const productId = $(this).data('id'); // Получаем data-id
-
-        console.log('Кликнут ID:', productId); // Для проверки
-        const $detailContainer = $('#product-detail');
         $detailContainer.empty();
-
         $detailContainer.html('<p>Загрузка...</p>');
 
         $.ajax({
@@ -13,13 +11,25 @@ $(document).ready(function () {
             method: 'GET',
             success: function (html) {
                 $detailContainer.empty().append(html);
-                $detailContainer.addClass('card-forward');
+                $detailContainer.addClass('card-forward').removeClass('card-backward');
                 $('.shop-grid').css("filter", "opacity(0.5)");
+                $blocker.fadeIn(200);
             },
             error: function (xhr, status, error) {
                 console.error("Ошибка загрузки карточки:", error);
                 $detailContainer.html('<p>Не удалось загрузить карточку товара.</p>');
             }
         });
+    });
+
+    $(document).on('click', '#card_close', function () {
+        console.log("click");
+        $blocker.fadeOut(200);  // <-- Правильное название метода
+        $detailContainer.removeClass('card-forward').addClass('card-backward');
+        $('.shop-grid').css("filter", "opacity(1)");
+
+        setTimeout(function () {
+            $detailContainer.empty();
+        }, 500);
     });
 });

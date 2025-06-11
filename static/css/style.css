@@ -1,6 +1,39 @@
 html {
     margin-bottom: 40px;
+    cursor: none !important; 
 }
+button {
+    cursor: none !important; 
+}
+#custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    z-index: 99999;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+#custom-cursor img {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Базовый курсор */
+.cursor-default img {
+    content: url("/static/icons/cursor_standart.svg");
+}
+
+/* Курсор-указатель (при наведении на кликабельные элементы) */
+.cursor-pointer img {
+    content: url("/static/icons/cursor_pointer.svg");
+}
+
 
 :root {
     --color1: rgb(0, 231, 255);
@@ -32,6 +65,13 @@ html {
     /* Header Letters Scale */
     --letter-scale: 2;
     --letter-gap-scale: 2;
+
+    --f-smallest: 16px;
+    --f-small: 18px;
+    --f-medium: 20px;
+    --f-standart: 24px;
+    --f-big: 32px;
+    --f-biggest: 64px;
 }
 
 /*Font*/
@@ -65,6 +105,14 @@ html {
          url('/static/fonts/gothic_bold.ttf') format('truetype');
 }
 
+
+/* Test */
+
+
+.card-back {
+    transform: rotateY(180deg);
+}
+
 /* Base Selectors */
 body{
     background-color: var(--col-bg);
@@ -86,32 +134,32 @@ a {
 }
 
 h2 {
-    font-size: 64px;
+    font-size: var(--f-biggest);
     line-height: 68px;
 }
 
 .h3-footer {
-    font-size: 32px;
+    font-size: var(--f-big);
     font-weight: 100;
 }
 
 p{
-    font-size: 24px;
+    font-size: var(--f-medium);
     line-height: 24px;
 }
 
 .p-m {
-    font-size: 20px;
+    font-size: var(--f-standart);
     line-height: 20px;
 }
 
 .p-s {
-    font-size: 18px;
+    font-size: var(--f-small);
     line-height: 22px;
 }
 
 .p-st {
-    font-size: 16px;
+    font-size: var(--f-smallest);
 }
 
 p, .p-m, .p-s {
@@ -162,7 +210,7 @@ p, .p-m, .p-s {
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    cursor: pointer;
+    cursor: none;
 }
 
 .F {
@@ -277,6 +325,18 @@ p, .p-m, .p-s {
      transition: filter .15s;
 }
 
+.modal-btn {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    cursor: none;
+}
+.exit {
+    background-image: url('/static/letters/X.svg');
+    width: calc(20px * var(--letter-scale));
+    height: calc(20px * var(--letter-scale));
+}
 
 
 /* Header */
@@ -303,8 +363,11 @@ p, .p-m, .p-s {
     min-width: 50px;
 }
 
-
-
+#card_close {
+    z-index: 10;
+    background-color: transparent;
+    border: none;
+}
 
 /* menu */
 
@@ -416,7 +479,7 @@ p, .p-m, .p-s {
     position: fixed;
     top: -100px; /* изначально вне экрана */
     left: 20px;
-    font-size: 24px;
+    font-size: var(--f-standart);
     font-family: monospace;
     color: #000;
     white-space: pre-wrap;
@@ -429,7 +492,7 @@ p, .p-m, .p-s {
     position: fixed;
     top: 20px;
     left: 20px;
-    font-size: 24px;
+    font-size: var(--f-standart);
     opacity: 0;
     transform: translateX(-100%);
     transition: all 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -472,6 +535,26 @@ p, .p-m, .p-s {
 
 /* Мобильные устройства — всегда по 2 товара в строке */
 @media (max-width: 767px) {
+    :root {
+        --letter-scale: 0.9;
+    }
+
+    /* Header */
+    .letter-box {
+        margin-top: 20px;
+    }
+    
+    .h2-menu {
+        font-size: var(--f-medium);
+    }
+    .menu {
+        text-align: right;
+        transition: all .15s;
+        position: fixed;
+        top: 50%;
+        right: 0;
+        transform: translate(-15%, -50%);
+    }
     .gecco {
         background-color: var(--col-bg);
     }
@@ -487,6 +570,7 @@ p, .p-m, .p-s {
         padding: 0 0px;
         gap: 0px;
         margin-left: 55px;
+        margin-top: 0;
     }
     .item-img {
         margin-bottom: 25px;
@@ -499,8 +583,8 @@ p, .p-m, .p-s {
         display:none
     }
     .item-card {
-        scale: 0.6;
-        left: 32px;
+        scale: 0.75;
+        left: 0px;
     }
 }
 
@@ -568,15 +652,12 @@ p, .p-m, .p-s {
     position: fixed;
     margin: auto;
     border-radius: 40px 20px 20px 20px;
-    padding: 85px 10px 44px 10px;
+    padding: 15px 10px 44px 10px;
     position: relative;
     overflow: hidden;
     z-index: 1;
     transform-style: preserve-3d;
     box-shadow:
-    -5px -5px 5px -5px var(--color1),
-    5px 5px 5px -5px var(--color2),
-    0 0 5px 0 rgba(255, 255, 255, 0),
     0 55px 35px -20px rgba(0, 0, 0, 0.5);
     transition: transform 0.5s ease, box-shadow 0.2s ease;
     will-change: transform, filter;
@@ -614,7 +695,7 @@ p, .p-m, .p-s {
     z-index: 1;
 }
 .item-card::after {
-    background-image: url("/static/card/foil.jpg"),
+    background-image: url("/static/card/foil_2.jpg"),
     linear-gradient(
         125deg,
         #C5EAD0 15%,
@@ -671,9 +752,7 @@ p, .p-m, .p-s {
 }
 
 .icon-coll {
-    position: absolute;
-    width: 35px;
-    right: 30px;
+    width: 50px;
 }
 
 .item-card-inner {
@@ -722,7 +801,7 @@ p, .p-m, .p-s {
 .card-showmore {
     scale: 1;
     z-index: 15;
-    cursor: pointer;
+    cursor: none;
 }
 .card-showmore:hover {
     scale: 1.1;
@@ -731,17 +810,92 @@ p, .p-m, .p-s {
 #card_heading {
     position: absolute;
 }
+.card-name-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 0 15px;
+}
+.card-share {
+     background-color: var(--col-bg);
+    border-radius: 45px;
+    aspect-ratio: 1/1;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+    scale: 1;
+    transition: all .15s;
+    z-index: 10;
+    left: -30px;
+    top: 15px;
+}
+.card-share img {
+    height: 30px;
+}
+
+.carousel-img {
+    width: 100px;
+    height: 86px;
+    overflow: hidden;
+    object-fit: cover;
+    filter: brightness(1);
+    transition: brightness .15s;
+}
+
+.carousel-img:hover {
+    filter: brightness(1.2);
+    transition: brightness .15s;
+}
+
+
+.card-share:hover {
+    scale: 1.1;
+    transition: all .15s;
+}
+.card-name {
+    font-size: var(--f-big);
+    text-align: center;
+    color: var(--col-black);
+    margin: 0;
+    width: 100%;
+
+}
 .card-img-box {
     width: 265px;
     height: 260px;
     padding: 15px;
-    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
 .card-img-box .card-thumbnail {
-    width: 100%;
     height: auto;
+    width: 250px;
 
+}
+.thumbnails-inner {
+    overflow-x: scroll;
+    display: flex;
+    min-width: max-content;
+    animation-name: scrollThumbs;
+    animation-play-state: running;
+    animation-duration: 50s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    z-index: 10;
+    position: relative;
+    
+}
+
+.card-scrolling-box {
+    height: 86px;
+    width: 100%;
+    overflow: hidden;
 }
 .item-card:hover .card-thumbnail{
     filter: brightness(1.05);
@@ -749,21 +903,18 @@ p, .p-m, .p-s {
     position: relative;
     display: block;
 }
-.card-scrolling-box {
-    height: 86px;
-    width: 100%;
-}
+
 .card-overflow-scrolling-box {
     padding: 3px 0px;
     width: auto;
     overflow: scroll;
 }
 .card-collection {
-    font-size: 16;
+    font-size: var(--f-smallest);
     line-height: 40px;
 }
 .card-description {
-    font-size: 16px;
+    font-size: var(--f-smallest);
     line-height: 1.1;
     text-align: justify;
     padding: 19px 15px;
@@ -793,6 +944,9 @@ p, .p-m, .p-s {
 .card-forward {
     animation: pop-in 0.5s ease-out forwards;
 }
+.card-backward {
+    animation: pop-out 0.5s ease-out forwards;
+}
 /* anim */
 @keyframes pop-in {
   from {
@@ -805,6 +959,18 @@ p, .p-m, .p-s {
     filter: blur(0);
     opacity: 1;
   }
+}
+@keyframes pop-out {
+    from {
+        transform: scale(1);
+        filter: blur(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(3);
+        filter: blur(50px);
+        opacity: 0;
+    }
 }
 
 
@@ -860,3 +1026,79 @@ p, .p-m, .p-s {
 
 
 
+
+.card-scrolling-box {
+    height: 86px;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+
+@keyframes scrollThumbs {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+
+
+/* Модальное окно */
+#modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+#modal-image {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+}
+
+#modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background-color: transparent;
+    border: none;
+}
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    border: none;
+    cursor: none;
+    z-index: 10001;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#background_blocker {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: transparent;
+    z-index: 9998;
+    display: none;
+    backdrop-filter: blur(6px); /* Можно отключить */
+}
+
+#prev-modal {
+    left: 20px;
+}
+
+#next-modal {
+    right: 20px;
+}

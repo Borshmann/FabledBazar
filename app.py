@@ -1,23 +1,24 @@
 from flask import Flask, render_template, jsonify
 import csv
 import random
-
+import os
 
 app = Flask(__name__)
 
 CSV_FILE = 'D:/CODE/germann/server/pythonProject1/database/data.csv'
 
 collections_colors = {
-    "Exlibris": "#5e35b1",
-    "All Hallows Eve": "#ff6f00",
-    "Zodiac": "#1e88e5",
-    "Lucky items": "#43a047",
-    "Alchimia": "#8e24aa",
-    "Baby dream": "#00acc1",
-    "Futurism": "#f4511e",
-    "Amore": "#e53935",
-    "Beast": "#6d4c41"
+    "Exlibris": "#DCC796",
+    "All Hallows Eve": "#D6804E",
+    "Zodiac": "#A9CEE0",
+    "Lucky items": "#AAD77D",
+    "Alchimia": "#B09EC7",
+    "Baby dream": "#F5C2CB",
+    "Futurism": "#B7C7C7",
+    "Amore": "#D06068",
+    "Beast": "#B6907A"
 }
+
 
 def get_collection_color():
     pass
@@ -28,6 +29,24 @@ def read_products_from_csv():
         for row in reader:
             products.append(row)
     return products
+
+def get_product_images(sku):
+    img_dir = os.path.join('static', 'img', sku)
+    if not os.path.exists(img_dir):
+        return []
+
+    images = []
+    main_img = f"{sku}-main.webp"
+    if os.path.isfile(os.path.join(img_dir, main_img)):
+        images.append(main_img)
+
+    for i in range(1, 10):  # Проверяем фото вида sku_1.webp ... sku_9.webp
+        filename = f"{sku}_{i}.webp"
+        if os.path.isfile(os.path.join(img_dir, filename)):
+            images.append(filename)
+
+    return images
+
 
 @app.route('/')
 def show_products():
@@ -64,10 +83,12 @@ def get_product_by_sku(sku):
 
 @app.route('/api/product-card/<sku>')
 def get_product_card(sku):
-    product = get_product_by_sku(sku)  # Реализуй поиск по SKU
+    product = get_product_by_sku(sku)
     if not product:
         return jsonify({'error': 'Product not found'}), 404
-    return render_template('card.html', product=product, collections_colors=collections_colors)
+
+    img_list = get_product_images(sku)  # Получаем список реально существующих фото
+    return render_template('card.html', product=product, collections_colors=collections_colors, img_list=img_list)
 
 @app.route('/api/product/<product_id>')
 def get_product_by_id(product_id):
@@ -82,4 +103,4 @@ def get_product_by_id(product_id):
         return jsonify({'error': str(e)})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000,debug=True)
+    app.run(host='0.0.0.0', port=8080,debug=True, ssl_context='adhoc')

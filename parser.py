@@ -1,72 +1,55 @@
-import requests
-from bs4 import BeautifulSoup
+import os
+import re
 
-# Замени URL на нужный тебе
-url = 'https://semibrevis.se/2021_jury_rus.html'
+# Путь к основной папке
+base_folder = r"D:\CODE\germann\photo"
 
-# Отправляем GET-запрос
-response = requests.get(url)
+# Функция для извлечения цифр из строки
+def extract_digits(s):
+    return ''.join(filter(str.isdigit, s))
 
-# Проверяем успешность запроса
-if response.status_code != 200:
-    print(f"Ошибка загрузки страницы: {response.status_code}")
-    exit()
+# Обработка всех элементов в базовой директории
+for folder_name in os.listdir(base_folder):
+    folder_path = os.path.join(base_folder, folder_name)
 
-# Парсим HTML
-soup = BeautifulSoup(response.text, 'html.parser')
+    # Пропускаем, если это не папка
+    if not os.path.isdir(folder_path):
+        continue
 
-# Ищем блок с классом "posts"
-posts_block = soup.find('div', class_='posts')
+    # Извлекаем только цифры из имени папки
+    digits_only = extract_digits(folder_name)
+    if not digits_only:
+        print(f"Папка '{folder_name}' не содержит цифр, пропускаем.")
+        continue
 
-if not posts_block:
-    print("Блок с классом 'posts' не найден")
-    exit()
+    # Новое имя папки — только цифры
+    new_folder_name = digits_only.zfill(4)  # Делаем 4-значным, например "0001"
+    new_folder_path = os.path.join(base_folder, new_folder_name)
 
-# Ищем все article внутри блока
-articles = posts_block.find_all('article')
+    # Если новое имя отличается — переименовываем
+    if folder_path != new_folder_path:
+        try:
+            os.rename(folder_path, new_folder_path)
+            print(f"Переименована папка '{folder_name}' -> '{new_folder_name}'")
+            current_folder = new_folder_name
+            folder_to_process = new_folder_path
+        except FileExistsError:
+            print(f"Папка '{new_folder_name}' уже существует, используем её.")
+            current_folder = folder_name
+            folder_to_process = folder_path
+    else:
+        current_folder = folder_name
+        folder_to_process = folder_path
 
-if not articles:
-    print("Статьи не найдены")
-    exit()
+    # Обработка файлов внутри папки
+    webp_files = [f for f in os.listdir(folder_to_process) if f.lower().endswith('.webp')]
+    for idx, filename in enumerate(webp_files, start=1):
+        old_path = os.path.join(folder_to_process, filename)
+        new_filename = f"{current_folder}_{idx}.webp"
+        new_path = os.path.join(folder_to_process, new_filename)
 
-# Обрабатываем каждую статью
-for i, article in enumerate(articles, start=1):
-    h3 = article.find('h3')
-    first_p_i = article.find('p')
-    second_p = first_p_i.find_next_sibling('p') if first_p_i else None
+        # Переименовываем файл
+        os.rename(old_path, new_path)
+        print(f"Файл '{filename}' переименован в '{new_filename}'")
 
-    title = h3.get_text(strip=True) if h3 else "Нет заголовка"
-    italic_text = first_p_i.get_text(strip=True) if first_p_i else "Нет курсивного текста"
-    paragraph = second_p.get_text(strip=True) if second_p else "Нет основного параграфа"
-    counter = 0
-    names = [
-        "Mats Widlund",
-        "Rolf Lindblom",
-        "Marc Power",
-        "Kristoffer Dolatko",
-        "Ivan Mikhaylov",
-        "Stanislaw Tichonow",
-        "Igor Tkatchouk",
-        "Oleg Larionov",
-        "Elena Power",
-        "Yuriy Sayutkin",
-        "Ola Karlsson",
-        "Magnus Lanning",
-        "Victoria Power",
-        "Yan Shuang Lindblom",
-        "Peter Schöning",
-        "Claes Wahlroth",
-        "Jekaterina Rostovtseva",
-        "Marina Ruusmaa",
-        "Eli-Marie Davidsen",
-        "Stefan Mathiesen"
-    ]
-    for i in names:
-        if i == title:
-            print(f"\n---  ---")
-            print(f"{title}")
-            print(f"{italic_text}")
-            print(f"{paragraph}")
-
-
-
+print("✅ Все файлы обработаны.")

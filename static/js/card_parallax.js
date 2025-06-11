@@ -1,22 +1,4 @@
 if($(window).width() > 760){
-    function startPulseAnimation($element, baseColor = '#9E7ACC') {
-        let blurMin = 50;
-        let blurMax = 70;
-        let brightness = 1;
-        let direction = 0.01;
-
-        function animate() {
-            brightness += direction;
-            if (brightness >= 1.7 || brightness <= 1) {
-                direction *= -1;
-            }
-            const adjustedColor = adjustBrightness(baseColor, brightness);
-            const blur = blurMin + (blurMax - blurMin) * ((brightness - 1) / 0.5);
-            $element.css('box-shadow', `0 0 ${blur}px 15px ${adjustedColor}`);
-            requestAnimationFrame(animate);
-        }
-        animate();
-    }
 
     // Функция для изменения яркости цвета
     function hexToRgb(hex) {
@@ -185,16 +167,5 @@ if($(window).width() > 760){
             bottom: isExpanded ? '' : '-30px'
             });
         });
-
-        $('#item-card').hover(
-        function() {
-            // При наведении мыши
-            startPulseAnimation($(this), '#9E7ACC');
-        },
-        function() {
-            // Когда мышь уходит
-            fadeOutShadow($('#item-card'));
-        }
-        );
     });
 };
